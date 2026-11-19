@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAT-CHECK Pro v2.0 — Smart Motorcycle Electrical Diagnostic</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar no-print">
+    <div>
+      <h1>BAT-CHECK <span class="badge">PRO v2.0</span></h1>
+      <p>Smart Battery &amp; Cranking Health Evaluation Check Kit</p>
+    </div>
+    <label class="buzzer-toggle">
+      <input type="checkbox" id="toggleBuzzer" checked />
+      <span>Buzzer Audio</span>
+    </label>
+  </header>
+
+  <main class="container">
+    <!-- PANEL KIRI: PERANGKAT PORTABEL & LAYAR OLED -->
+    <section class="device-shell no-print">
+      <div class="device-header">
+        <span class="brand-engraved">BAT-CHECK // DIAGNOSTIC UNIT</span>
+        <div class="led-group">
+          <div class="led-item"><span id="ledPwr" class="led on-blue"></span><small>PWR</small></div>
+          <div class="led-item"><span id="ledOk" class="led"></span><small>OK</small></div>
+          <div class="led-item"><span id="ledWarn" class="led"></span><small>WARN</small></div>
+          <div class="led-item"><span id="ledFault" class="led"></span><small>FAULT</small></div>
+        </div>
+      </div>
+
+      <!-- LAYAR OLED VIRTUAL -->
+      <div class="oled-bezel">
+        <div class="oled-screen">
+          <div class="oled-meta">
+            <span id="oledMode">MODE: OCV (DIAM)</span>
+            <span id="oledMotor">SKUTIK 110-125cc</span>
+          </div>
+
+          <div class="oled-readout">
+            <span id="oledValue">12.68</span>
+            <span id="oledUnit">V</span>
+          </div>
+          <div id="oledSub" class="oled-sub">Tegangan diam mesin mati (SoC ~100%)</div>
+
+          <canvas id="oledWave" width="340" height="72"></canvas>
+
+          <div class="oled-footer">
+            <div class="soh-wrap">
+              <span>SoH: <strong id="sohText">96%</strong></span>
+              <div class="soh-bar"><div id="sohFill" style="width: 96%;"></div></div>
+            </div>
+            <span id="oledStatus" class="status-pill ok">NORMAL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOMBOL FISIK ALAT -->
+      <div class="keypad">
+        <button class="key-btn active" data-mode="ocv">1. OCV<small>Diam</small></button>
+        <button class="key-btn" data-mode="crank">2. CRANK<small>Starter</small></button>
+        <button class="key-btn" data-mode="charge">3. CHARGE<small>Pengisian</small></button>
+        <button class="key-btn" data-mode="leak">4. LEAK<small>Bocor Arus</small></button>
+      </div>
+
+      <div class="action-keys">
+        <button id="btnAutoScan" class="btn-primary">AUTO SCAN (4 TAHAP)</button>
+        <button id="btnPrint" class="btn-accent">CETAK STRUK</button>
+      </div>
+
+      <div class="printer-slot">
+        <span>THERMAL PRINTER 58MM SLOT</span>
+      </div>
+    </section>
+
+    <!-- PANEL KANAN: KONTROL SIMULASI & PROFIL -->
+    <section class="control-panel no-print">
+      <div class="card">
+        <h2>Profil Kendaraan</h2>
+        <div class="form-grid">
+          <label>
+            Plat / ID Motor
+            <input type="text" id="inputPlate" value="N 2026 BT" maxlength="16" />
+          </label>
+          <label>
+            Kategori Motor
+            <select id="selectMotor">
+              <option value="Skutik Injeksi 110-125cc">Skutik Injeksi 110-125cc</option>
+              <option value="Skutik 150-160cc">Skutik 150-160cc</option>
+              <option value="Motor Sport 150-250cc">Motor Sport 150-250cc</option>
+              <option value="Bebek / Karburator">Bebek / Karburator</option>
+            </select>
+          </label>
+          <label>
+            Jenis Aki
+            <select id="selectBattery">
+              <option value="MF / Kering 12V">MF / Kering 12V</option>
+              <option value="Basah / Konvensional 12V">Basah 12V</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Preset Skenario Demo</h2>
+        <div class="preset-grid">
+          <button class="preset-btn" data-preset="normal">Kelistrikan Sehat</button>
+          <button class="preset-btn" data-preset="weak">Aki Soak / Drop</button>
+          <button class="preset-btn" data-preset="overcharge">Kiprok Overcharge</button>
+          <button class="preset-btn" data-preset="undercharge">Spul Lemah</button>
+          <button class="preset-btn" data-preset="leak">Bocor Arus (Korslet)</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Kalibrasi Sensor Manual</h2>
+        <div class="slider-group">
+          <label>
+            <span>Tegangan Diam (OCV)</span>
+            <strong id="valOcv">12.68 V</strong>
+          </label>
+          <input type="range" id="sliderOcv" min="10.0" max="13.4" step="0.02" value="12.68" />
+
+          <label>
+            <span>Drop Starter (Cranking)</span>
+            <strong id="valCrank">10.85 V</strong>
+          </label>
+          <input type="range" id="sliderCrank" min="7.0" max="12.4" step="0.05" value="10.85" />
+
+          <label>
+            <span>Pengisian @3000 RPM (Charging)</span>
+            <strong id="valCharge">14.20 V</strong>
+          </label>
+          <input type="range" id="sliderCharge" min="11.5" max="16.5" step="0.05" value="14.20" />
+
+          <label>
+            <span>Kebocoran Arus (Parasitic Leak)</span>
+            <strong id="valLeak">12 mA</strong>
+          </label>
+          <input type="range" id="sliderLeak" min="0" max="200" step="1" value="12" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- BAGIAN BAWAH: STRUK THERMAL & RIWAYAT -->
+  <section class="bottom-section">
+    <div class="receipt-zone">
+      <div class="receipt-actions no-print">
+        <h2>Hasil Struk Thermal</h2>
+        <div class="btn-row">
+          <button id="btnPrintPdf" class="btn-small">Print / Simpan PDF</button>
+          <button id="btnCopyReceipt" class="btn-small">Salin Teks</button>
+        </div>
+      </div>
+      <div id="receiptPaper" class="receipt-paper">
+        <pre id="receiptContent">Tekan "AUTO SCAN" atau "CETAK STRUK" untuk mencetak hasil diagnosa.</pre>
+      </div>
+    </div>
+
+    <div class="history-zone card no-print">
+      <div class="history-head">
+        <h2>Riwayat Diagnosa</h2>
+        <button id="btnClearHistory" class="btn-danger-sm">Hapus Semua</button>
+      </div>
+      <ul id="historyList" class="history-list"></ul>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

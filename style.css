@@ -1,0 +1,377 @@
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --border: #2a323d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --oled-bg: #041019;
+  --oled-cyan: #38e8ff;
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --fault: #ef4444;
+  --accent: #3b82f6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at top, #141c28, var(--bg) 60%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.topbar {
+  max-width: 1120px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topbar h1 { font-size: 1.5rem; letter-spacing: 0.5px; }
+.topbar p { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+.badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 99px;
+  vertical-align: middle;
+}
+
+.buzzer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* PERANGKAT HARDWARE */
+.device-shell {
+  background: linear-gradient(160deg, #252c37, #171c24);
+  border: 2px solid #353f4e;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.device-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.brand-engraved {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #9aa7b8;
+}
+
+.led-group { display: flex; gap: 10px; }
+.led-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.led-item small { font-size: 0.6rem; color: var(--muted); }
+
+.led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2b3340;
+  border: 1px solid #111;
+  transition: 0.2s;
+}
+.led.on-blue { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+.led.on-ok { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+.led.on-warn { background: var(--warn); box-shadow: 0 0 10px var(--warn); }
+.led.on-fault { background: var(--fault); box-shadow: 0 0 10px var(--fault); }
+
+/* LAYAR OLED */
+.oled-bezel {
+  background: #090c10;
+  padding: 10px;
+  border-radius: 14px;
+  border: 2px solid #111827;
+  margin-bottom: 16px;
+}
+
+.oled-screen {
+  background: var(--oled-bg);
+  border: 1px solid rgba(56, 232, 255, 0.25);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: "Consolas", "Courier New", monospace;
+  color: var(--oled-cyan);
+  box-shadow: inset 0 0 24px rgba(56, 232, 255, 0.1);
+}
+
+.oled-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  opacity: 0.85;
+  border-bottom: 1px dashed rgba(56, 232, 255, 0.25);
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.oled-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+#oledValue {
+  font-size: 2.7rem;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(56, 232, 255, 0.45);
+}
+#oledUnit { font-size: 1.2rem; opacity: 0.85; }
+
+.oled-sub {
+  text-align: center;
+  font-size: 0.76rem;
+  color: #a5f3fc;
+  margin-bottom: 8px;
+  min-height: 18px;
+}
+
+#oledWave {
+  width: 100%;
+  height: 72px;
+  display: block;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.oled-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.soh-wrap { flex: 1; font-size: 0.74rem; }
+.soh-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+#sohFill {
+  height: 100%;
+  background: var(--ok);
+  transition: width 0.3s, background 0.3s;
+}
+
+.status-pill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #081018;
+}
+.status-pill.ok { background: var(--ok); }
+.status-pill.warn { background: var(--warn); }
+.status-pill.fault { background: var(--fault); color: #fff; }
+
+/* KEYPAD */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.key-btn {
+  background: #1f2733;
+  color: var(--text);
+  border: 1px solid #384354;
+  border-radius: 10px;
+  padding: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: 0.15s;
+}
+.key-btn small { font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+.key-btn:hover { background: #293444; }
+.key-btn.active {
+  border-color: var(--oled-cyan);
+  background: #122938;
+  box-shadow: 0 0 12px rgba(56, 232, 255, 0.25);
+}
+
+.action-keys { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.btn-primary, .btn-accent {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 10px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.15s;
+}
+.btn-primary { background: #2563eb; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-accent { background: #059669; }
+.btn-accent:hover { background: #047857; }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.printer-slot {
+  height: 14px;
+  background: #090c10;
+  border-radius: 99px;
+  border-top: 2px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.printer-slot span { font-size: 0.56rem; letter-spacing: 1.5px; color: #4b5563; }
+
+/* PANEL KONTROL KANAN */
+.control-panel { display: flex; flex-direction: column; gap: 16px; }
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+}
+.card h2 { font-size: 1rem; margin-bottom: 12px; color: #f0f6fc; }
+
+.form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.form-grid label { display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; color: var(--muted); }
+.form-grid input, .form-grid select {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.preset-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.preset-btn {
+  background: #21262d;
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.preset-btn:hover { border-color: var(--oled-cyan); background: #2b333d; }
+
+.slider-group { display: flex; flex-direction: column; gap: 10px; }
+.slider-group label { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.slider-group input[type="range"] { width: 100%; accent-color: var(--oled-cyan); }
+
+/* STRUK & RIWAYAT */
+.bottom-section {
+  max-width: 1120px;
+  margin: 22px auto 0;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.receipt-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.receipt-actions h2 { font-size: 1rem; }
+.btn-row { display: flex; gap: 8px; }
+.btn-small, .btn-danger-sm {
+  border: 1px solid var(--border);
+  background: #21262d;
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.btn-danger-sm { border-color: #7f1d1d; color: #fca5a5; }
+
+.receipt-paper {
+  background: #fdfcf7;
+  color: #1a1a1a;
+  font-family: "Courier New", monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  padding: 18px 16px;
+  border-radius: 4px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  border-top: 6px dashed #cbd5e1;
+  border-bottom: 6px dashed #cbd5e1;
+  overflow-x: auto;
+}
+.receipt-paper.printing { animation: slideOut 0.45s ease-out; }
+@keyframes slideOut {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.history-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.history-list { list-style: none; display: flex; flex-direction: column; gap: 10px; max-height: 360px; overflow-y: auto; }
+.history-item {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.84rem;
+}
+.history-meta { color: var(--muted); font-size: 0.75rem; margin-top: 3px; }
+.empty-msg { color: var(--muted); font-size: 0.85rem; }
+
+/* RESPONSIF HP */
+@media (max-width: 900px) {
+  .container, .bottom-section { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* MODE PRINT PDF: HANYA CETAK STRUK THERMAL */
+@media print {
+  body { background: #fff; padding: 0; }
+  .no-print { display: none !important; }
+  .bottom-section { display: block; margin: 0; }
+  .receipt-paper {
+    box-shadow: none;
+    border: none;
+    max-width: 300px;
+    margin: 0 auto;
+    font-size: 11px;
+  }
+}
